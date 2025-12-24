@@ -1,5 +1,13 @@
-from pdf_loader import load_pdf, extract_text_from_pages
-from chunker import create_chunks_with_metadata
+import os
+import sys
+
+# Add project root to Python path
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.append(PROJECT_ROOT)
+
+from ingestion.pdf_loader import load_pdf, extract_text_from_pages
+from ingestion.chunker import create_chunks_with_metadata
+
 
 PDF_PATH = "data/healthy_food_products.pdf"
 
@@ -24,5 +32,5 @@ if __name__ == "__main__":
     for i in range(min(2, len(chunks))):
         print("\n--- Chunk Preview ---")
         print(f"Page: {chunks[i]['metadata']['page_number']}")
-        print(f"Chunk Index: {chunks[i]['metadata']['chunk_index']}")
+        print(f"Product Index: {chunks[i]['metadata']['product_index']}")
         print(chunks[i]['content'][:500])

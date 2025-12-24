@@ -12,7 +12,7 @@ def run_tests():
     rag = RAGPipeline(top_k=3)
 
     queries = [
-        "What are the nutritional benefits of Green Lentils?"
+        "What is the recommended usage of Cauliflower?"
     ]
 
     for q in queries:

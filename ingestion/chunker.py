@@ -10,46 +10,45 @@ def normalize_text(text: str) -> str:
     return text.strip()
 
 
-def chunk_text(
-    text: str,
-    chunk_size: int = 500,
-    overlap: int = 100
-) -> List[str]:
+def split_by_product(text: str) -> List[str]:
     """
-    Splits text into overlapping chunks based on word count.
+    Splits text so that each chunk corresponds to exactly ONE product.
+
+    Assumes each product starts with 'Product #:'.
     """
-    words = text.split()
-    chunks = []
+    raw_products = text.split("Product #:")
+    product_chunks = []
 
-    start = 0
-    total_words = len(words)
+    for product in raw_products:
+        product = product.strip()
+        if not product:
+            continue
 
-    while start < total_words:
-        end = start + chunk_size
-        chunk_words = words[start:end]
-        chunk = " ".join(chunk_words)
-        chunks.append(chunk)
-        start += chunk_size - overlap
+        # Reattach the delimiter to keep structure intact
+        product_chunks.append("Product #:" + product)
 
-    return chunks
+    return product_chunks
 
 
 def create_chunks_with_metadata(documents: List[Dict]) -> List[Dict]:
     """
-    Creates chunks with metadata from extracted PDF documents.
+    Creates product-level chunks with metadata from extracted PDF documents.
+    Each chunk represents exactly one product.
     """
     all_chunks = []
 
     for doc in documents:
         normalized_text = normalize_text(doc["text"])
-        chunks = chunk_text(normalized_text)
 
-        for idx, chunk in enumerate(chunks):
+        # Split by product boundary
+        product_chunks = split_by_product(normalized_text)
+
+        for idx, chunk in enumerate(product_chunks):
             all_chunks.append({
                 "content": chunk,
                 "metadata": {
                     "page_number": doc["page_number"],
-                    "chunk_index": idx
+                    "product_index": idx
                 }
             })
 
