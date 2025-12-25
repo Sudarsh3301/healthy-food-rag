@@ -4,7 +4,6 @@ import pickle
 import faiss
 import numpy as np
 
-# Add project root to path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 
@@ -24,17 +23,14 @@ def build_faiss_index():
     model = EmbeddingModel()
     embeddings = model.embed_texts(texts)
 
-    # Ensure numpy float32 for FAISS
     vectors = np.array(embeddings).astype("float32")
     dim = vectors.shape[1]
 
     index = faiss.IndexFlatL2(dim)
     index.add(vectors)
 
-    # Persist index
     faiss.write_index(index, FAISS_INDEX_PATH)
 
-    # Persist metadata aligned by vector order
     with open(METADATA_PATH, "wb") as f:
         pickle.dump(
             {

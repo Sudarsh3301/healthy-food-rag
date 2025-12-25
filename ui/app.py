@@ -2,7 +2,6 @@ import os
 import sys
 import gradio as gr
 
-# Add project root to Python path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 

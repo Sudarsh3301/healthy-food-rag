@@ -2,7 +2,6 @@ import os
 import sys
 import ollama
 
-# Add project root to Python path
 PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 sys.path.append(PROJECT_ROOT)
 
@@ -30,7 +29,6 @@ class RAGPipeline:
         """
         Query → FAISS Retrieval → Prompt Injection → Ollama Generation
         """
-        # Step 1: Retrieve grounded chunks
         retrieved_chunks = self.searcher.search(question, k=self.top_k)
 
         question_lower = question.lower()
@@ -39,20 +37,16 @@ class RAGPipeline:
             if question_lower in chunk["content"].lower()
               ]
 
-        # If product-specific chunks exist, prioritize them
         if product_hits:
             retrieved_chunks = product_hits
  
-        # Step 2: Build context
         context = self.build_context(retrieved_chunks)
 
-        # Step 3: Fixed prompt (grounded)
         prompt = RAG_PROMPT_TEMPLATE.format(
             context=context,
             question=question
         )
 
-        # Step 4: Single Ollama call (non-agentic)
         response = ollama.generate(
             model=self.model_name,
             prompt=prompt,
